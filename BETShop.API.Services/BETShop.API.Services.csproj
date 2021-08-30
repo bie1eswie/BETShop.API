@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BETShop.DLL\BETShop.DLL.csproj" />
     <ProjectReference Include="..\BETShop.Utilities\BETShop.Utilities.csproj" />
   </ItemGroup>
 
