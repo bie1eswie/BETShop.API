@@ -30,7 +30,7 @@ namespace BETShop.API.Infrastructure.Repositories
 				{
 						var totalItems = await _productCatalogDbContext.Products.LongCountAsync();
 
-						var itemsOnPage = await _productCatalogDbContext.Products
+						var itemsOnPage = await _productCatalogDbContext.Products.Where(x=>x.Quantity>0)
 								.OrderBy(c => c.Name)
 								.Skip(pageSize * pageIndex)
 								.Take(pageSize)
@@ -39,6 +39,19 @@ namespace BETShop.API.Infrastructure.Repositories
 						var productViewsOnPage = _mapper.Map<List<Product>, IEnumerable<ProductView>>(itemsOnPage);
 						var currentPage = new ProductPageView(pageIndex, pageSize, totalItems, productViewsOnPage);
 						return currentPage;
+				}
+				public async Task<bool> IsProductInStock(int productID)
+				{
+						return await _productCatalogDbContext.Products.AnyAsync(x => x.Id == productID && x.Quantity > 0);
+				}
+				public async Task UpdateProductQuantity(int productId, int quantity)
+				{
+						var product = await _productCatalogDbContext.Products.SingleOrDefaultAsync(x => x.Id == productId);
+						if (product != null) {
+								product.Quantity = quantity;
+								_productCatalogDbContext.Products.Update(product);
+							await	_productCatalogDbContext.SaveChangesAsync();
+						}
 				}
 		}
 }

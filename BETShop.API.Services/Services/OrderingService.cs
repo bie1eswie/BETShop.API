@@ -17,12 +17,14 @@ namespace BETShop.API.Services
 				private readonly IOrderingRepository _orderingRepository;
 				private readonly IShoppingCardRepository _shoppingCardRepository;
 				private readonly IMembershipService _membershipService;
+				private readonly IProductRepository _productRepository;
 
-				public OrderingService(IOrderingRepository orderingRepository, IShoppingCardRepository shoppingCardRepository, IMembershipService membershipService)
+				public OrderingService(IOrderingRepository orderingRepository, IShoppingCardRepository shoppingCardRepository, IMembershipService membershipService, IProductRepository productRepository)
 				{
 						_orderingRepository = orderingRepository;
 						_shoppingCardRepository = shoppingCardRepository;
 						_membershipService = membershipService;
+						_productRepository = productRepository;
 				}
 				public async Task<Order> CheckOut(ShoppingCardView  shoppingCardView)
 				{
@@ -34,8 +36,12 @@ namespace BETShop.API.Services
 						var orderItems = new List<OrderItem>();
 						foreach (var item in shoppingCardView.CardItems)
 						{
-								OrderItem orderItem = new OrderItem(item.Price, item.Quantity, item.ProductId);
-								orderItems.Add(orderItem);
+								if (await _productRepository.IsProductInStock(item.ProductId))
+								{
+										OrderItem orderItem = new OrderItem(item.Price, item.Quantity, item.ProductId);
+										orderItems.Add(orderItem);
+										await	_productRepository.UpdateProductQuantity(item.ProductId, item.Quantity);
+								}
 						}
 						var subTotal = orderItems.Sum(item => item.Price * item.Quantity);
 

@@ -11,5 +11,7 @@ namespace BETShop.API.Infrastructure.Repositories.Abstract
 		{
 				Task<ProductView> GetProductByIdAsync(int id);
 				Task<ProductPageView> GetProductsPage(int pageSize = 10, int pageIndex = 0);
+				Task<bool> IsProductInStock(int productID);
+				Task UpdateProductQuantity(int productId, int quantity);
 		}
 }
