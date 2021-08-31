@@ -48,7 +48,7 @@ namespace BETShop.API.Infrastructure.Repositories
 				{
 						var product = await _productCatalogDbContext.Products.SingleOrDefaultAsync(x => x.Id == productId);
 						if (product != null) {
-								product.Quantity = quantity;
+								product.Quantity -= quantity;
 								_productCatalogDbContext.Products.Update(product);
 							await	_productCatalogDbContext.SaveChangesAsync();
 						}
