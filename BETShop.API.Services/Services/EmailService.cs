@@ -3,6 +3,7 @@ using BETShop.API.Infrastructure.Logging;
 using BETShop.API.Services.Abstract;
 using BETShop.API.Utilities.Settings;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
@@ -40,7 +41,7 @@ namespace BETShopAPI.Services
                 {
                     // we would need to filter the accepted certificates for production 
                     client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                    await client.ConnectAsync(_settings.EmailSettings.MailServer, _settings.EmailSettings.MailPort, true);
+                    await client.ConnectAsync(_settings.EmailSettings.MailServer, _settings.EmailSettings.MailPort, SecureSocketOptions.StartTls);
                     await client.AuthenticateAsync(_settings.EmailSettings.Sender, _settings.EmailSettings.Password);
                     await client.SendAsync(mimeMessage);
                     await client.DisconnectAsync(true);
