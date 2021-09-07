@@ -15,6 +15,8 @@ namespace BETShop.Utilities
 				{
 						CreateMap<Product, ProductView>();
 						CreateMap<ShoppingCard, ShoppingCardView>();
+						CreateMap<ShoppingCardView, ShoppingCard>();
+						CreateMap<CardItemView, CardItem>();
 						CreateMap<CardItem, CardItemView>();
 						CreateMap<CardItem, Product>().ForMember(d => d.Id, o => o.MapFrom(s => s.ProductId));
 				}
